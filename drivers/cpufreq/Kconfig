@@ -153,6 +153,12 @@ config CPU_FREQ_DEFAULT_GOV_ZZMOOVE
           frequency lookup tables and optimized scaling triggers instead of
           % frequency steps to get smooth up/downscaling dependant on CPU load.
 
+config CPU_FREQ_DEFAULT_GOV_LIONHEART
+        bool "lionheart"
+        select CPU_FREQ_GOV_LIONHEART
+        help
+        Use the CPUFreq governor 'lionheart' as default.
+
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE

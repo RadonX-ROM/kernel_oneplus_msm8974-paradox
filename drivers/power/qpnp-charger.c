@@ -54,6 +54,7 @@
 
 #ifdef CONFIG_FORCE_FAST_CHARGE
 #include <linux/fastchg.h>
+#endif
 
 #ifdef CONFIG_MACH_MSM8974_14001
 /* zuoyonghua@oneplus.cn 2015-02-13 default close log */

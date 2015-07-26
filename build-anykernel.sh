@@ -32,9 +32,9 @@ export CCACHE=ccache
 
 # Paths
 KERNEL_DIR=`pwd`
-REPACK_DIR="${HOME}/android/source/kernel/OPO-AnyKernel"
-PATCH_DIR="${HOME}/android/source/kernel/OPO-AnyKernel/patch"
-MODULES_DIR="${HOME}/android/source/kernel/OPO-AnyKernel/modules"
+REPACK_DIR="${HOME}/android/source/kernel/OPO-CAF-AnyKernel"
+PATCH_DIR="${HOME}/android/source/kernel/OPO-CAF-AnyKernel/patch"
+MODULES_DIR="${HOME}/android/source/kernel/OPO-CAF-AnyKernel/modules"
 ZIP_MOVE="${HOME}/android/source/zips/opo-caf-zips"
 ZIMAGE_DIR="${HOME}/android/source/kernel/msm8974_OPO_render_kernel/arch/arm/boot"
 VARIANT="OPO-CAF"

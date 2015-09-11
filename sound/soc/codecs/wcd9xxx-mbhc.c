@@ -2673,17 +2673,30 @@ static void wcd9xxx_mbhc_decide_swch_plug(struct wcd9xxx_mbhc *mbhc)
 				     mbhc->mbhc_bias_regs.ctl_reg) & 0x80)));
 
 	mbhc->scaling_mux_in = 0x04;
-	//liuyan 2014-1-2 modify for delay detect headset
-	#ifdef CONFIG_MACH_MSM8974_14001
-       plug_type=PLUG_TYPE_INVALID;
-	#else
 
 	if (current_source_enable) {
 		wcd9xxx_turn_onoff_current_source(mbhc, &mbhc->mbhc_bias_regs,
 						  true, false);
 		plug_type = wcd9xxx_codec_cs_get_plug_type(mbhc, false);
-		wcd9xxx_turn_onoff_current_source(mbhc, &mbhc->mbhc_bias_regs,
-						  false, false);
+
+#ifdef CONFIG_MACH_OPPO
+		/*
+		 * Our hardware usually reports an invalid/incorrect plug type
+		 * on the very first poll, but the second poll often returns the
+		 * correct plug type, so poll twice in hopes of getting lucky and
+		 * cutting detection latency in half for PLUG_TYPE_HEADPHONE.
+		 */
+		usleep(1000);
+		plug_type = wcd9xxx_codec_cs_get_plug_type(mbhc, false);
+#endif
+		/*
+		 * For other plug types, the current source disable
+		 * will be done from wcd9xxx_correct_swch_plug
+		 */
+		if (plug_type == PLUG_TYPE_HEADSET)
+			wcd9xxx_turn_onoff_current_source(mbhc,
+						&mbhc->mbhc_bias_regs,
+						false, false);
 	} else {
 		wcd9xxx_turn_onoff_override(mbhc, true);
 		plug_type = wcd9xxx_codec_get_plug_type(mbhc, true);
@@ -2697,11 +2710,13 @@ static void wcd9xxx_mbhc_decide_swch_plug(struct wcd9xxx_mbhc *mbhc)
 			 __func__);
 		return;
 	}
-#ifdef CONFIG_MACH_MSM8974_14001
-        //liuyan 2013-3-13 add
-        printk("%s:plug_type:%d,\n",__func__,plug_type);
-        //liuyan add end
-#endif
+
+#ifdef CONFIG_MACH_OPPO
+	if (plug_type == PLUG_TYPE_HEADPHONE)
+		wcd9xxx_report_plug(mbhc, 1, SND_JACK_HEADPHONE);
+	wcd9xxx_cleanup_hs_polling(mbhc);
+	wcd9xxx_schedule_hs_detect_plug(mbhc, &mbhc->correct_plug_swch);
+#else
 	if (plug_type == PLUG_TYPE_INVALID ||
 	    plug_type == PLUG_TYPE_GND_MIC_SWAP) {
 		wcd9xxx_cleanup_hs_polling(mbhc);

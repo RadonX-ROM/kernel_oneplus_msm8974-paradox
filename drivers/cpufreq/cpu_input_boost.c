@@ -167,8 +167,8 @@ static void __cpuinit fb_boost_fn(struct work_struct *work)
 		queue_delayed_work(boost_wq, &fb_boost_work,
 					msecs_to_jiffies(FB_BOOST_MS));
 	} else {
-		cpu_unboost_all();
 		fb_boost = UNBOOST;
+		cpu_unboost_all();
 	}
 }
 

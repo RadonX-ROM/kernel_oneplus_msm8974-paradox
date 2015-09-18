@@ -419,7 +419,6 @@ static void lm3630_backlight_unregister(struct lm3630_chip_data *pchip)
 {
 	int ret;
 	struct lm3630_chip_data *pchip = lm3630_pchip;
-	bool bl_resume;
 	pr_debug("%s: bl=%d\n", __func__,bl_level);
 
 	// LCD notifier
@@ -463,7 +462,6 @@ static void lm3630_backlight_unregister(struct lm3630_chip_data *pchip)
 	if (!bl_level) {
         ret = regmap_write(lm3630_pchip->regmap, REG_BRT_A, 0);
 		ret = regmap_update_bits(pchip->regmap, REG_CTRL, 0x80, 0x80);
-		lcd_notifier_call_chain(LCD_EVENT_OFF_END, NULL);
 		if (ret < 0)
 			goto out;
 		return bl_level;
@@ -502,10 +500,6 @@ static void lm3630_backlight_unregister(struct lm3630_chip_data *pchip)
 				   REG_BRT_A, 2+(bl_level-1)*9/18);
 			}
 #endif /*CONFIG_MACH_MSM8974_14001*/
-
-		if (bl_resume)
-			lcd_notifier_call_chain(LCD_EVENT_ON_END, NULL);
-
 		if (ret < 0)
 			goto out;
 #ifdef CONFIG_MACH_MSM8974_14001

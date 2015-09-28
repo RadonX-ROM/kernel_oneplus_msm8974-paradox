@@ -428,7 +428,6 @@ static void lm3630_backlight_unregister(struct lm3630_chip_data *pchip)
 	// if display is switched on
 	else if (!pre_brightness) {
 		lcd_notifier_call_chain(LCD_EVENT_ON_START, NULL);
-		bl_resume = true;
 	}
 
 #ifdef CONFIG_STATE_NOTIFIER
